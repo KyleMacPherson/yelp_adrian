@@ -30,4 +30,6 @@ class RestaurantsController < ApplicationController
     @restaurant.update(restaurant_params)
     redirect_to '/restaurants'
   end
+
+  #comment
 end
