@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 feature 'restaurants' do
+
+  before :each do
+    sign_up
+  end
+
   context 'no restaurants have been added' do
     before do
       Restaurant.create(name: 'KFC')
@@ -21,6 +26,12 @@ feature 'restaurants' do
       click_button 'Create Restaurant'
       expect(page).to have_content 'KFC'
       expect(current_path).to eq '/restaurants'
+    end
+
+    scenario 'user must be logged in to create restaurant' do
+      click_link 'Sign out'
+      click_link 'Add a restaurant'
+      expect(page).to have_content 'You need to sign in or sign up before continuing.'
     end
 
     context 'an invalid restaurant' do
@@ -56,6 +67,13 @@ feature 'restaurants' do
       expect(page).to have_content 'Kentucky Fried Chicken'
       expect(current_path).to eq '/restaurants'
     end
+
+    scenario 'user can only edit a restaurant they have created' do
+      foreign_restaurant
+      visit '/restaurants'
+      click_link 'Edit foreign'
+      expect(page).to_not have_content('Update Restaurant')
+    end
   end
 
   context 'deleting restaurants' do
@@ -75,4 +93,5 @@ feature 'restaurants' do
       expect(page).to have_content "No restaurants yet"
       expect(page).to have_link 'Add a restaurant'
     end
+
 end
